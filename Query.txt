@@ -1,0 +1,45 @@
+-- ricerca biglietti disponibili per un determinato volo
+SELECT b.codice_biglietto
+FROM BIGLIETTO b
+JOIN PRENOTAZIONE p ON b.Id_prenotazione = p.Id_prenotazione
+JOIN VOLO v ON p.Id_volo = v.Id_volo
+WHERE v.codice_volo = 'DWWYRZ' AND b.stato_del_biglietto = 'Emesso';
+
+
+
+-- storico delle prenotazioni di un cliente
+SELECT p.Id_prenotazione, v.codice_volo, v.partenza, v.arrivo, p.data_prenotazione, p.stato_prenotazione
+FROM PRENOTAZIONE p
+JOIN VOLO v ON P.Id_volo = v.Id_volo
+WHERE p.Id_passeggero = 01
+ORDER BY p.data_prenotazione DESC;
+
+
+
+-- verifica della validità di un biglietto
+SELECT b.codice_volo, b.stato_del_biglietto, v.partenza_time
+FROM BIGLIETTO b
+JOIN PRENOTAZIONE p ON b.Id_prenotazione = p.Id_prenotazione
+JOIN VOLO v ON p.Id_volo = v.Id_volo
+WHERE b.codice_biglietto = 'B01' AND v.partenza_time > CURRENT_TIMESTAMP AND b.stato_del_biglietto = 'Emesso';
+
+
+
+-- ricerca dei voli da un aeroporto ad un altro con scalo 
+SELECT v.codice_volo, v.partenza_time, v.arrivo_time, a1.nome AS aeroporto_di_partenza, a2.nome AS aeroporto_di_arrivo
+FROM VOLO v
+JOIN aeroporto a1 ON v.Id_aeroporto_di_partenza = a1.Id_aeroporto
+JOIN aeroporto a2 ON v.Id_aeroporto_di_arrivo = a2.Id_aeroporto
+LEFT JOIN SCALO 1 ON v.Id_volo = 1.Id_volo
+WHERE a1.nome = 'Bari' AND a2.nome = 'New York'
+ORDER BY v.partenza_time;
+
+
+
+-- statistiche sui voli con il numero di passeggeri
+SELECT v.codice_volo
+COUNT (p.Id_prenotazione) AS totale_passeggeri
+FROM VOLO v
+JOIN PRENOTAZIONE p ON v.Id_volo = p.Id_volo
+GROUP BY v.codice_volo
+ORDER BY totale_passeggeri DESC;
